@@ -1,0 +1,20 @@
+{
+  "name": "ubiyachi-zoom-image",
+  "version": "1.0.0",
+  "description": "view enlarged images",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Fee-ing",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "Fee-ing/Fee-npm/tree/main/zoom-image"
+  },
+  "keywords": [
+    "image",
+    "zoom",
+    "javascript"
+  ]
+}
