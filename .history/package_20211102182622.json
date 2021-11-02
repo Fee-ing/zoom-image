@@ -1,7 +1,7 @@
 {
   "name": "fee-zoom-image",
   "version": "1.0.0",
-  "description": "点击查看大图",
+  "description": "view enlarged images",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
