@@ -185,7 +185,7 @@
           that.originHeight = target.offsetHeight
   
           const times = imageElement.width / imageElement.height
-          that.zoomWidth = imageElement.width < that.minWidth ? that.minWidth : imageElement.width
+          that.zoomWidth = imageElement.width < that.options.minWidth ? that.options.minWidth : imageElement.width
           that.zoomHeight = that.zoomWidth / times
           if (that.zoomWidth > clientWidth * 0.9) {
             that.zoomWidth = clientWidth * 0.9
@@ -211,7 +211,7 @@
               width: 100%;
               height: 100%;
               opacity: 1;
-              transition: opacity ${that.duration}s;
+              transition: opacity ${that.options.duration}s;
               background-repeat: no-repeat;
               background-image: url(${that.imageSrc});
               background-size: ${that.getElementCss(target, 'background-size')};
@@ -225,7 +225,7 @@
               width: 100%;
               height: 100%;
               opacity: 0;
-              transition: opacity ${that.duration}s;
+              transition: opacity ${that.options.duration}s;
             `
             zoomElement.appendChild(shadowElement)
             zoomElement.appendChild(imageElement)
@@ -236,7 +236,7 @@
             height: ${that.originHeight}px;
             left: ${that.offsetLeft}px;
             top: ${that.offsetTop}px;
-            transition: transform ${that.duration}s;
+            transition: transform ${that.options.duration}s;
             overflow: hidden;
           `
   
@@ -249,7 +249,7 @@
             width: 100%;
             height: 100%;
             overflow: hidden;
-            transition: background-color ${that.duration}s;
+            transition: background-color ${that.options.duration}s;
             transform: translate3d(0, 0, 0);
           `
           maskElement.appendChild(zoomElement)
