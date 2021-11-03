@@ -1,6 +1,6 @@
 {
   "name": "fee-zoom-image",
-  "version": "1.0.3",
+  "version": "1.0.2",
   "description": "查看大图",
   "main": "index",
   "scripts": {
@@ -13,8 +13,7 @@
     "url": "git+https://github.com/Fee-ing/zoom-image.git"
   },
   "keywords": [
-    "image",
-    "zoom",
+    "zoom image",
     "javascript"
   ]
 }
