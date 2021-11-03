@@ -16,7 +16,7 @@ yarn add fee-zoom-image
 import ZoomImage from 'fee-zoom-image'
 
 var zoomImage = new ZoomImage({
-  className: 'zoom-image',  //默认为zoom-image
+  className: 'zoom-image',  //被选中元素须添加的类，默认为zoom-image
   minWidth: 100,    //大图的最小宽度，默认为100
   duration: 0.3   //放大动画过渡时间，单位秒，默认为0.3
 })
