@@ -303,11 +303,13 @@
           function mousewheelHandle (event) {
             event = event || window.event
             let delta = event.wheelDelta ? event.wheelDelta : (-event.detail) * 40
+            let isResetTranslate = false
   
             if (delta > 0) {
               that.wheelTimes += that.wheelTimes < 1 ? 0.2 : 0.5
             } else {
               that.wheelTimes -= that.wheelTimes <= 1 ? 0.2 : 0.5
+              isResetTranslate = true
             }
             if (that.wheelTimes > 5) {
               that.wheelTimes = 5
@@ -315,6 +317,11 @@
             } else if (that.wheelTimes < 0.2) {
               that.wheelTimes = 0.2
               return
+            }
+  
+            if (isResetTranslate) {
+              that.translateX = clientWidth / 2 - (that.offsetLeft + that.originWidth / 2)
+              that.translateY = clientHeight / 2 - (that.offsetTop + that.originHeight / 2)
             }
   
             zoomElement.style.cssText += `

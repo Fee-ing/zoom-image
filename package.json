@@ -1,6 +1,6 @@
 {
   "name": "fee-zoom-image",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "查看大图",
   "main": "index",
   "scripts": {
