@@ -11,6 +11,8 @@
         className: 'zoom-image',
         minWidth: 100,
         duration: 0.3,
+        enableWheelScale: true,
+        enableDragMove: true,
         ...options
       }
   
@@ -24,11 +26,35 @@
       this.offsetTop = 0
       this.scrollLeft = 0
       this.scrollTop = 0
+      this.scaleX = 1
+      this.scaleY = 1
+      this.translateX = 0
+      this.translateY = 0
+      this.wheelTimes = 1
       this.transitionFlag = false
   
       this.listeners = {}
   
       this.init()
+    }
+  
+    reset () {
+      this.imageSrc = ''
+      this.srcType = ''
+      this.originWidth = 0
+      this.originHeight = 0
+      this.zoomWidth = 0
+      this.zoomHeight = 0
+      this.offsetLeft = 0
+      this.offsetTop = 0
+      this.scrollLeft = 0
+      this.scrollTop = 0
+      this.scaleX = 1
+      this.scaleY = 1
+      this.translateX = 0
+      this.translateY = 0
+      this.wheelTimes = 1
+      this.transitionFlag = false
     }
   
     on (type, fn) {
@@ -135,17 +161,14 @@
       }
     }
   
-    reset () {
-      this.imageSrc = ''
-      this.zoomWidth = 0
-      this.zoomHeight = 0
-      this.originWidth = 0
-      this.originHeight = 0
-      this.offsetLeft = 0
-      this.offsetTop = 0
-      this.scrollLeft = 0
-      this.scrollTop = 0
-      this.transitionFlag = false
+    addEvent (ele, type, handler) {
+      if (ele.addEventListener) {
+        ele.addEventListener(type, handler, false)
+      } else if (ele.attachEvent) {
+        ele.attachEvent(`on${type}`, handler)
+      } else {
+        ele[`on${type}`] = handler
+      }
     }
   
     init () {
@@ -195,6 +218,11 @@
             that.zoomHeight = clientHeight * 0.9
             that.zoomWidth = that.zoomHeight * times
           }
+  
+          that.scaleX = that.zoomWidth / that.originWidth
+          that.scaleY = that.zoomHeight / that.originHeight
+          that.translateX = clientWidth / 2 - (that.offsetLeft + that.originWidth / 2)
+          that.translateY = clientHeight / 2 - (that.offsetTop + that.originHeight / 2)
   
           let zoomElement = null, shadowElement = null
           if (that.srcType === '1') {
@@ -259,7 +287,7 @@
             maskElement.style.cssText += 'background-color: rgba(0, 0, 0, 0.55);'
   
             zoomElement.style.cssText += `
-              transform: translate(${clientWidth / 2 - (that.offsetLeft + that.originWidth / 2)}px, ${clientHeight / 2 - (that.offsetTop + that.originHeight / 2)}px) scale(${that.zoomWidth / that.originWidth}, ${that.zoomHeight / that.originHeight});
+              transform: translate(${that.translateX}px, ${that.translateY}px) scale(${that.scaleX}, ${that.scaleY});
             `
             if (that.srcType === '2') {
               shadowElement.style.cssText += `
@@ -270,12 +298,84 @@
               `
             }
           })
+  
+          //鼠标滚轮放大缩小
+          function mousewheelHandle (event) {
+            event = event || window.event
+            let delta = event.wheelDelta ? event.wheelDelta : (-event.detail) * 40
+  
+            if (delta > 0) {
+              that.wheelTimes += that.wheelTimes < 1 ? 0.2 : 0.5
+            } else {
+              that.wheelTimes -= that.wheelTimes <= 1 ? 0.2 : 0.5
+            }
+            if (that.wheelTimes > 5) {
+              that.wheelTimes = 5
+              return
+            } else if (that.wheelTimes < 0.2) {
+              that.wheelTimes = 0.2
+              return
+            }
+  
+            zoomElement.style.cssText += `
+              transition: transform ${that.options.duration}s;
+              cursor: ${that.wheelTimes > 1 ? 'move' : 'auto'};
+              transform: translate(${that.translateX}px, ${that.translateY}px) scale(${that.scaleX * that.wheelTimes}, ${that.scaleY * that.wheelTimes});
+            `
+          }
+          if (that.options.enableWheelScale) {
+            that.addEvent(zoomElement, 'mousewheel', mousewheelHandle)
+            that.addEvent(zoomElement, 'DOMMouseScroll', mousewheelHandle)    //兼容火狐
+          }
+          
+          if (that.options.enableWheelScale && that.options.enableDragMove) {
+            //拖拽
+            let isMouseDown = false
+            let startX = 0, startY = 0, offsetX = 0, offsetY = 0
+            that.addEvent(zoomElement, 'mousedown', function (event) {
+              if (that.wheelTimes <= 1) return
+              isMouseDown = true
+              startX = event.clientX
+              startY = event.clientY
+              event.preventDefault()
+              event.stopPropagation()
+            })
+            that.addEvent(zoomElement, 'mousemove', function (event) {
+              if (that.wheelTimes <= 1 || !isMouseDown) return
+              offsetX = event.clientX - startX
+              offsetY = event.clientY - startY
+  
+              zoomElement.style.cssText += `
+                transition: none;
+                transform: translate(${that.translateX + offsetX}px, ${that.translateY + offsetY}px) scale(${that.scaleX * that.wheelTimes}, ${that.scaleY * that.wheelTimes});
+              `
+              event.preventDefault()
+              event.stopPropagation()
+            })
+            that.addEvent(zoomElement, 'mouseup', function (event) {
+              if (that.wheelTimes <= 1) return
+              if (isMouseDown) {
+                that.translateX += offsetX
+                that.translateY += offsetY
+                offsetX = 0
+                offsetY = 0
+              }
+              isMouseDown = false
+              event.preventDefault()
+              event.stopPropagation()
+            })
+  
+            zoomElement.onclick = function (event) {
+              if (that.wheelTimes > 1) event.stopPropagation()
+            }
+          }
           
           maskElement.onclick = function (event) {
             event.stopPropagation()
             maskElement.style.backgroundColor = ''
     
             zoomElement.style.cssText += `
+              transition: transform ${that.options.duration}s;
               transform: none;
             `
             if (that.srcType === '2') {
