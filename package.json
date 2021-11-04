@@ -1,10 +1,11 @@
 {
   "name": "fee-zoom-image",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "查看大图",
-  "main": "index",
+  "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack"
   },
   "author": "Fee-ing",
   "license": "MIT",
@@ -19,5 +20,9 @@
     "PC",
     "鼠标滚轮",
     "拖拽移动"
-  ]
+  ],
+  "devDependencies": {
+    "webpack": "^5.61.0",
+    "webpack-cli": "^4.9.1"
+  }
 }
