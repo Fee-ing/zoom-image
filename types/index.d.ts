@@ -1,13 +1,13 @@
-export as namespace ZoomImage
-export default ZoomImage
-
-interface ZoomImageOptions {
+export interface ZoomImageOptions {
   className?: string
   minWidth?: number
   duration?: number
   enableWheelScale?: boolean
   enableDragMove?: boolean
 }
+
+export as namespace ZoomImage
+export default ZoomImage
 
 declare class ZoomImage {
   constructor(options?: ZoomImageOptions)
