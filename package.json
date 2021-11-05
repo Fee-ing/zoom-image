@@ -1,8 +1,8 @@
 {
   "name": "fee-zoom-image",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "查看大图",
-  "main": "index.js",
+  "main": "./dist/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack"
@@ -13,6 +13,7 @@
     "type": "git",
     "url": "git+https://github.com/Fee-ing/zoom-image.git"
   },
+  "typings": "./types/index.d.ts",
   "keywords": [
     "image",
     "zoom",
