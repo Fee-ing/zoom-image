@@ -8,6 +8,23 @@ class ZoomImage {
       enableDragMove: true,
       ...options
     }
+    this.options.className = (this.options.className || '') + ''
+    if (isNaN(this.options.minWidth)) {
+      this.options.minWidth = 100
+    } else {
+      this.options.minWidth = parseInt(this.options.minWidth || 100)
+      if (this.options.minWidth > 500) this.options.minWidth = 500
+      if (this.options.minWidth < 20) this.options.minWidth = 20
+    }
+    if (isNaN(this.options.duration)) {
+      this.options.duration = 0.3
+    } else {
+      this.options.duration = parseFloat(parseFloat(this.options.duration || 0.3).toFixed(2))
+      if (this.options.duration > 1) this.options.duration = 1
+      if (this.options.duration < 0) this.options.duration = 0
+    }
+    this.options.enableWheelScale = Boolean(this.options.enableWheelScale)
+    this.options.enableDragMove = Boolean(this.options.enableDragMove)
 
     this.imageSrc = ''
     this.srcType = ''
@@ -155,20 +172,21 @@ class ZoomImage {
   }
 
   addEvent (ele, type, handler) {
-    if (ele.addEventListener) {
-      ele.addEventListener(type, handler, false)
-    } else if (ele.attachEvent) {
-      ele.attachEvent(`on${type}`, handler)
-    } else {
-      ele[`on${type}`] = handler
-    }
-  }
+		if (ele.addEventListener) {
+			ele.addEventListener(type, handler, false)
+		} else if (ele.attachEvent) {
+			ele.attachEvent(`on${type}`, handler)
+		} else {
+			ele[`on${type}`] = handler
+		}
+	}
 
   init () {
     const that = this
     document.onclick = function (e) {
+      e.stopPropagation()
       const target = e.target
-      if (target.className.indexOf(that.options.className) < 0) return
+      if (!that.options.className || target.className.indexOf(that.options.className) < 0) return
 
       that.reset()
 
@@ -184,6 +202,10 @@ class ZoomImage {
       }
       if (!that.imageSrc) {
         that.emit('error', { message: '获取图片失败' })
+        return
+      }
+      if (!/\.(png|jpg|gif|jpeg|webp)$/.test(that.imageSrc)) {
+        that.emit('error', { message: '不支持该格式' })
         return
       }
 
